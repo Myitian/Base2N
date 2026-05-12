@@ -24,7 +24,7 @@ public class BufferWriterBase2NDecoder : IBase2NDecoder
 
     public void WriteDigit(int digit, int extraBits = 0)
     {
-        ObjectDisposedException.ThrowIf(_currentBits < 0, typeof(PipeBase2NDecoder));
+        ObjectDisposedException.ThrowIf(_currentBits < 0, typeof(BufferWriterBase2NDecoder));
         int mask = Radix - 1;
         int bitsPerDigit = BitOperations.PopCount((uint)mask);
         if (_currentBits > 64 - bitsPerDigit)
@@ -34,7 +34,7 @@ public class BufferWriterBase2NDecoder : IBase2NDecoder
     }
     public void Flush()
     {
-        ObjectDisposedException.ThrowIf(_currentBits < 0, typeof(PipeBase2NDecoder));
+        ObjectDisposedException.ThrowIf(_currentBits < 0, typeof(BufferWriterBase2NDecoder));
         (int byteCount, int remainingBits) = Math.DivRem(_currentBits, 8);
         ulong output = _buffer << (64 - _currentBits);
         if (BitConverter.IsLittleEndian)

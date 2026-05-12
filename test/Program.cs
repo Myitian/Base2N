@@ -9,12 +9,12 @@ Console.WriteLine(Convert.ToBase64String(bytes));
 MemoryBase2NEncoder b64 = new(bytes, 64);
 Console.WriteLine($"{string.Concat(Enumerable.Range(0, b64.Count).Select(i =>
 {
-    int v = b64[i];
-    return v switch
+    int d = b64[i];
+    return d switch
     {
-        < 26 => (char)('A' + v),
-        < 52 => (char)('a' + v - 26),
-        < 62 => (char)('0' + v - 52),
+        < 26 => (char)('A' + d),
+        < 52 => (char)('a' + d - 26),
+        < 62 => (char)('0' + d - 52),
         62 => '+',
         _ => '/'
     };
