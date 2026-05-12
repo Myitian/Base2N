@@ -34,22 +34,17 @@ public class PipeBase2NDecoder(PipeWriter writer, int radix, bool leaveOpen = fa
         await ((PipeWriter)Writer).WriteAsync(_asyncBuffer.AsMemory(0, byteCount), cancellationToken).ConfigureAwait(false);
         _currentBits = remainingBits;
     }
-    public override void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        if (_currentBits >= 0)
-        {
-            Flush();
-            _currentBits = -1;
-            if (!_leaveOpen)
-                ((PipeWriter)Writer).Complete();
-        }
-        GC.SuppressFinalize(this);
+        base.Dispose(disposing);
+        if (!_leaveOpen)
+            ((PipeWriter)Writer).Complete();
     }
     public async ValueTask DisposeAsync()
     {
         if (_currentBits >= 0)
         {
-            await FlushAsync();
+            await FlushAsync().ConfigureAwait(false);
             _currentBits = -1;
             if (!_leaveOpen)
                 await ((PipeWriter)Writer).CompleteAsync().ConfigureAwait(false);

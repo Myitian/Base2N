@@ -68,6 +68,7 @@ public static class Base2NUtils
     }
     public static bool MoveNext(IBase2NEnumerator enumerator)
     {
+        ArgumentNullException.ThrowIfNull(enumerator);
         int bitsPerDigit = BitOperations.PopCount((uint)enumerator.Mask);
         int offset = enumerator.CurrentBits - bitsPerDigit;
         if (offset < 0)
@@ -102,6 +103,7 @@ public static class Base2NUtils
     }
     public static async ValueTask<bool> MoveNextAsync(IBase2NAsyncEnumerator enumerator, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(enumerator);
         int bitsPerDigit = BitOperations.PopCount((uint)enumerator.Mask);
         int offset = enumerator.CurrentBits - bitsPerDigit;
         if (offset < 0)

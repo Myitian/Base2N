@@ -42,13 +42,17 @@ public class BufferWriterBase2NDecoder : IBase2NDecoder
         Writer.Write(MemoryMarshal.AsBytes(new ReadOnlySpan<ulong>(ref output))[..byteCount]);
         _currentBits = remainingBits;
     }
-    public virtual void Dispose()
+    protected virtual void Dispose(bool disposing)
     {
         if (_currentBits >= 0)
         {
             Flush();
             _currentBits = -1;
         }
+    }
+    public void Dispose()
+    {
+        Dispose(true);
         GC.SuppressFinalize(this);
     }
 }

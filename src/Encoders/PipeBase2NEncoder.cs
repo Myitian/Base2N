@@ -35,7 +35,7 @@ public class PipeBase2NEncoder : IAsyncEnumerable<int>
         private PipeReader? _reader = encoder.Reader;
         private ulong _buffer;
         private readonly int _mask = encoder.Radix - 1;
-        private int _currentBits = 0;
+        private int _currentBits;
 
         public int CurrentBits => _currentBits;
         public int Current { get; private set; }
@@ -44,7 +44,7 @@ public class PipeBase2NEncoder : IAsyncEnumerable<int>
         int IBase2NAsyncEnumerator.Mask => _mask;
         int IBase2NAsyncEnumerator.Current { get => Current; set => Current = value; }
         int IBase2NAsyncEnumerator.CurrentBits { get => _currentBits; set => _currentBits = value; }
-        public bool ReadingCompleted { get; private set; } = false;
+        public bool ReadingCompleted { get; private set; }
 
         public async ValueTask<bool> MoveNextAsync()
         {
