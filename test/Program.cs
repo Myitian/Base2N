@@ -6,6 +6,14 @@ using System.Security.Cryptography;
 byte[] bytes = RandomNumberGenerator.GetBytes(77);
 Console.WriteLine(Convert.ToBase64String(bytes));
 MemoryBase2NEncoder b64 = new(bytes, 64);
+Console.WriteLine($"{string.Concat(Enumerable.Range(0, b64.Count).Select(i => b64[i] switch
+{
+    < 26 => (char)('A' + b64[i]),
+    < 52 => (char)('a' + b64[i] - 26),
+    < 62 => (char)('0' + b64[i] - 52),
+    62 => '+',
+    _ => '/'
+}))}:{b64.ExtraBits}");
 Console.WriteLine($"{string.Concat(b64.Select(i => i switch
 {
     < 26 => (char)('A' + i),

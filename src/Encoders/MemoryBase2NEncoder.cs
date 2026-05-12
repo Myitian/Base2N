@@ -32,7 +32,11 @@ public readonly struct MemoryBase2NEncoder : IReadOnlyList<int>
         int bitPerDigit = BitOperations.TrailingZeroCount((uint)radix);
         (LongCount, long extraBitsU64) = Math.DivRem((long)data.Length * 8, bitPerDigit);
         int extraBits = (int)extraBitsU64;
-        ExtraBits = extraBits != 0 ? bitPerDigit - extraBits : 0;
+        if (extraBits != 0)
+        {
+            LongCount++;
+            ExtraBits = bitPerDigit - extraBits;
+        }
     }
 
     public Enumerator GetEnumerator()
