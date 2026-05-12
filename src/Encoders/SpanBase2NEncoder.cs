@@ -29,10 +29,7 @@ public readonly ref struct SpanBase2NEncoder : IReadOnlyList<int>
             throw new ArgumentException("Radix must be a power of two.", nameof(radix));
         Data = data;
         Radix = radix;
-        int bitPerDigit = BitOperations.TrailingZeroCount((uint)radix);
-        (LongCount, long extraBitsU64) = Math.DivRem((long)data.Length * 8, bitPerDigit);
-        int extraBits = (int)extraBitsU64;
-        ExtraBits = extraBits != 0 ? bitPerDigit - extraBits : 0;
+        (LongCount, ExtraBits) = Base2NUtils.GetCountAndExtraBits(data.Length, radix);
     }
 
     public Enumerator GetEnumerator()

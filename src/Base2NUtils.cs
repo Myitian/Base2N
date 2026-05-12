@@ -5,6 +5,18 @@ namespace Base2N;
 
 public static class Base2NUtils
 {
+    public static (long Count, int ExtraBits) GetCountAndExtraBits(long dataLength, int radix)
+    {
+        int bitsPerDigit = BitOperations.TrailingZeroCount((uint)radix);
+        (long count, long extraBitsU64) = Math.DivRem(dataLength * 8, bitsPerDigit);
+        int extraBits = (int)extraBitsU64;
+        if (extraBits != 0)
+        {
+            count++;
+            extraBits = bitsPerDigit - extraBits;
+        }
+        return (count, extraBits);
+    }
     public static int DigitAt(ReadOnlySpan<byte> data, int radix, int index)
     {
         int mask = radix - 1;

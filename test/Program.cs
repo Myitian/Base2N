@@ -1,3 +1,4 @@
+using Base2N;
 using Base2N.Decoders;
 using Base2N.Encoders;
 using System.Buffers;
@@ -6,13 +7,17 @@ using System.Security.Cryptography;
 byte[] bytes = RandomNumberGenerator.GetBytes(77);
 Console.WriteLine(Convert.ToBase64String(bytes));
 MemoryBase2NEncoder b64 = new(bytes, 64);
-Console.WriteLine($"{string.Concat(Enumerable.Range(0, b64.Count).Select(i => b64[i] switch
+Console.WriteLine($"{string.Concat(Enumerable.Range(0, b64.Count).Select(i =>
 {
-    < 26 => (char)('A' + b64[i]),
-    < 52 => (char)('a' + b64[i] - 26),
-    < 62 => (char)('0' + b64[i] - 52),
-    62 => '+',
-    _ => '/'
+    int v = b64[i];
+    return v switch
+    {
+        < 26 => (char)('A' + v),
+        < 52 => (char)('a' + v - 26),
+        < 62 => (char)('0' + v - 52),
+        62 => '+',
+        _ => '/'
+    };
 }))}:{b64.ExtraBits}");
 Console.WriteLine($"{string.Concat(b64.Select(i => i switch
 {
@@ -92,7 +97,7 @@ static async ValueTask Test2(MemoryStream resultBuffer)
                     if (!await enumerator.MoveNextAsync())
                     {
                         await decoder.WriteDigitAsync(last, -enumerator.CurrentBits);
-                        if (-enumerator.CurrentBits != new MemoryBase2NEncoder(mem, radix).ExtraBits)
+                        if (-enumerator.CurrentBits != Base2NUtils.GetCountAndExtraBits(length, radix).ExtraBits)
                             throw new Exception("Test failed.");
                         break;
                     }
@@ -132,7 +137,7 @@ static void Test3(MemoryStream resultBuffer)
                     if (!enumerator.MoveNext())
                     {
                         decoder.WriteDigit(last, -enumerator.CurrentBits);
-                        if (-enumerator.CurrentBits != new MemoryBase2NEncoder(mem, radix).ExtraBits)
+                        if (-enumerator.CurrentBits != Base2NUtils.GetCountAndExtraBits(length, radix).ExtraBits)
                             throw new Exception("Test failed.");
                         break;
                     }
