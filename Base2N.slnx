@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/Base2N.csproj" />
+  <Project Path="test/Base2N.Test.csproj" />
+</Solution>
