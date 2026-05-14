@@ -4,7 +4,7 @@ public interface IBase2NEnumeratorData
 {
     ulong Buffer { get; set; }
     int Mask { get; }
-    int Current { get; set; }
+    int CurrentValue { get; set; }
     int CurrentBits { get; set; }
     bool ReadingCompleted { get; }
 }

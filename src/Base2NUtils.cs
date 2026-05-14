@@ -55,7 +55,7 @@ public static class Base2NUtils
         return (int)(BinaryPrimitives.ReadUInt64BigEndian(buffer) >> (64 - bitsPerDigit - bitInByteOffset)) & mask;
     }
     public static bool MoveNext<T>(ref T enumerator)
-        where T : IBase2NEnumerator, allows ref struct
+        where T : struct, IBase2NEnumerator, allows ref struct
     {
         int bitsPerDigit = BitOperations.PopCount((uint)enumerator.Mask);
         int offset = enumerator.CurrentBits - bitsPerDigit;
@@ -66,7 +66,7 @@ public static class Base2NUtils
                 if (enumerator.CurrentBits > 0)
                 {
                     enumerator.Buffer <<= bitsPerDigit - enumerator.CurrentBits;
-                    enumerator.Current = (int)enumerator.Buffer & enumerator.Mask;
+                    enumerator.CurrentValue = (int)enumerator.Buffer & enumerator.Mask;
                     enumerator.CurrentBits -= bitsPerDigit;
                     // Negative value indicates the extra bits in output sequence
                     return true;
@@ -85,7 +85,7 @@ public static class Base2NUtils
             if (bitsReadDiff > 0)
                 enumerator.CurrentBits -= bitsReadDiff;
         }
-        enumerator.Current = (int)(enumerator.Buffer >> offset) & enumerator.Mask;
+        enumerator.CurrentValue = (int)(enumerator.Buffer >> offset) & enumerator.Mask;
         enumerator.CurrentBits -= bitsPerDigit;
         return true;
     }
@@ -101,7 +101,7 @@ public static class Base2NUtils
                 if (enumerator.CurrentBits > 0)
                 {
                     enumerator.Buffer <<= bitsPerDigit - enumerator.CurrentBits;
-                    enumerator.Current = (int)enumerator.Buffer & enumerator.Mask;
+                    enumerator.CurrentValue = (int)enumerator.Buffer & enumerator.Mask;
                     enumerator.CurrentBits -= bitsPerDigit;
                     // Negative value indicates the extra bits in output sequence
                     return true;
@@ -120,7 +120,7 @@ public static class Base2NUtils
             if (bitsReadDiff > 0)
                 enumerator.CurrentBits -= bitsReadDiff;
         }
-        enumerator.Current = (int)(enumerator.Buffer >> offset) & enumerator.Mask;
+        enumerator.CurrentValue = (int)(enumerator.Buffer >> offset) & enumerator.Mask;
         enumerator.CurrentBits -= bitsPerDigit;
         return true;
     }
@@ -136,7 +136,7 @@ public static class Base2NUtils
                 if (enumerator.CurrentBits > 0)
                 {
                     enumerator.Buffer <<= bitsPerDigit - enumerator.CurrentBits;
-                    enumerator.Current = (int)enumerator.Buffer & enumerator.Mask;
+                    enumerator.CurrentValue = (int)enumerator.Buffer & enumerator.Mask;
                     enumerator.CurrentBits -= bitsPerDigit;
                     // Negative value indicates the extra bits in output sequence
                     return true;
@@ -156,7 +156,7 @@ public static class Base2NUtils
             if (bitsReadDiff > 0)
                 enumerator.CurrentBits -= bitsReadDiff;
         }
-        enumerator.Current = (int)(enumerator.Buffer >> offset) & enumerator.Mask;
+        enumerator.CurrentValue = (int)(enumerator.Buffer >> offset) & enumerator.Mask;
         enumerator.CurrentBits -= bitsPerDigit;
         return true;
     }

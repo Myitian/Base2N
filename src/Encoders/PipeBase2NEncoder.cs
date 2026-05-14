@@ -4,7 +4,7 @@ using System.IO.Pipelines;
 
 namespace Base2N.Encoders;
 
-public class PipeBase2NEncoder : IAsyncEnumerable<int>
+public class PipeBase2NEncoder : IBase2NEncoder, IAsyncEnumerable<int>
 {
     public PipeReader Reader { get; }
     public int Radix { get; }
@@ -39,7 +39,7 @@ public class PipeBase2NEncoder : IAsyncEnumerable<int>
 
         ulong IBase2NEnumeratorData.Buffer { get => _buffer; set => _buffer = value; }
         int IBase2NEnumeratorData.Mask => _mask;
-        int IBase2NEnumeratorData.Current { get => Current; set => Current = value; }
+        int IBase2NEnumeratorData.CurrentValue { get => Current; set => Current = value; }
         int IBase2NEnumeratorData.CurrentBits { get => _currentBits; set => _currentBits = value; }
         public bool ReadingCompleted { get; private set; }
 

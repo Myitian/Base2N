@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace Base2N.Encoders;
 
-public sealed class StreamBase2NEncoder : IEnumerable<int>, IAsyncEnumerable<int>
+public sealed class StreamBase2NEncoder : IBase2NEncoder, IEnumerable<int>, IAsyncEnumerable<int>
 {
     public Stream Stream { get; }
     public int Radix { get; }
@@ -46,7 +46,7 @@ public sealed class StreamBase2NEncoder : IEnumerable<int>, IAsyncEnumerable<int
 
         ulong IBase2NEnumeratorData.Buffer { get => _buffer; set => _buffer = value; }
         int IBase2NEnumeratorData.Mask => _mask;
-        int IBase2NEnumeratorData.Current { get => Current; set => Current = value; }
+        int IBase2NEnumeratorData.CurrentValue { get => Current; set => Current = value; }
         int IBase2NEnumeratorData.CurrentBits { get => _currentBits; set => _currentBits = value; }
         public bool ReadingCompleted { get; private set; } = false;
 

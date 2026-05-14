@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace Base2N.Encoders;
 
-public readonly struct SequenceBase2NEncoder : IReadOnlyList<int>
+public readonly struct SequenceBase2NEncoder : IBase2NRandomAccessibleEncoder
 {
     public ReadOnlySequence<byte> Data { get; }
     public long LongCount { get; }
@@ -52,7 +52,7 @@ public readonly struct SequenceBase2NEncoder : IReadOnlyList<int>
 
         ulong IBase2NEnumeratorData.Buffer { readonly get => _buffer; set => _buffer = value; }
         readonly int IBase2NEnumeratorData.Mask => _mask;
-        int IBase2NEnumeratorData.Current { readonly get => Current; set => Current = value; }
+        int IBase2NEnumeratorData.CurrentValue { readonly get => Current; set => Current = value; }
         int IBase2NEnumeratorData.CurrentBits { readonly get => _currentBits; set => _currentBits = value; }
         public bool ReadingCompleted { get; private set; }
 
