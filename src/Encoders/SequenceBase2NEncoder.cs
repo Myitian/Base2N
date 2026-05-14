@@ -1,28 +1,18 @@
+using System.Buffers;
 using System.Buffers.Binary;
 using System.Collections;
-using System.Numerics;
 
 namespace Base2N.Encoders;
 
-public readonly struct MemoryBase2NEncoder : IReadOnlyList<int>
+public readonly struct SequenceBase2NEncoder : IEnumerable<int>
 {
-    public ReadOnlyMemory<byte> Data { get; }
+    public ReadOnlySequence<byte> Data { get; }
     public long LongCount { get; }
     public int Count => checked((int)LongCount);
     public int Radix { get; }
     public int ExtraBits { get; }
 
-    public int this[int index]
-    {
-        get
-        {
-            ArgumentOutOfRangeException.ThrowIfNegative(index);
-            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, Count);
-            return Base2NUtils.DigitAt(Data.Span, Radix, index);
-        }
-    }
-
-    public MemoryBase2NEncoder(ReadOnlyMemory<byte> data, int radix)
+    public SequenceBase2NEncoder(ReadOnlySequence<byte> data, int radix)
     {
         Base2NUtils.ValidateRadix(radix);
         Data = data;
@@ -37,14 +27,14 @@ public readonly struct MemoryBase2NEncoder : IReadOnlyList<int>
     IEnumerator IEnumerable.GetEnumerator()
         => GetEnumerator();
 
-    public struct Enumerator(MemoryBase2NEncoder encoder)
+    public struct Enumerator(SequenceBase2NEncoder encoder)
         : IEnumerator<int>, IBase2NEnumerator
     {
-        private readonly ReadOnlyMemory<byte> _data = encoder.Data;
+        private readonly ReadOnlySequence<byte> _original = encoder.Data;
+        private ReadOnlySequence<byte> _data = encoder.Data;
         private ulong _buffer;
         private readonly int _mask = encoder.Radix - 1;
         private int _currentBits = 0;
-        private int _index = 0;
 
         public readonly int CurrentBits => _currentBits;
         public int Current { readonly get; private set; }
@@ -54,32 +44,34 @@ public readonly struct MemoryBase2NEncoder : IReadOnlyList<int>
         readonly int IBase2NEnumerator.Mask => _mask;
         int IBase2NEnumerator.Current { readonly get => Current; set => Current = value; }
         int IBase2NEnumerator.CurrentBits { readonly get => _currentBits; set => _currentBits = value; }
-        public readonly bool ReadingCompleted => _index < 0;
+        public bool ReadingCompleted { get; private set; }
 
         public bool MoveNext()
             => Base2NUtils.MoveNext(ref this);
         public void Reset()
         {
             _currentBits = 0;
-            _index = 0;
+            _data = _original;
+            ReadingCompleted = false;
         }
         public readonly void Dispose() { }
 
         public uint ReadData(ref int bytesToRead)
         {
-            int remaining = _data.Length - _index;
+            long remaining = _data.Length;
             Span<byte> buffer = stackalloc byte[4];
             buffer.Clear();
             if (remaining <= bytesToRead)
             {
-                _data.Span[_index..].CopyTo(buffer);
-                _index = -1;
-                bytesToRead = remaining;
+                _data.CopyTo(buffer);
+                ReadingCompleted = true;
+                bytesToRead = (int)remaining;
             }
             else
             {
-                _data.Span.Slice(_index, bytesToRead).CopyTo(buffer);
-                _index += bytesToRead;
+                SequencePosition pos = _data.GetPosition(bytesToRead);
+                _data.Slice(_data.Start, pos).CopyTo(buffer);
+                _data = _data.Slice(pos);
             }
             return BinaryPrimitives.ReadUInt32BigEndian(buffer);
         }

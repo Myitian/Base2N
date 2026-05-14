@@ -7,5 +7,5 @@ public interface IBase2NEnumerator
     int Current { get; set; }
     int CurrentBits { get; set; }
     bool ReadingCompleted { get; }
-    uint ReadAtLeast(ref int bytesToRead);
+    uint ReadData(ref int bytesToRead);
 }

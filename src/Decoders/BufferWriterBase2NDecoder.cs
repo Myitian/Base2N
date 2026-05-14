@@ -7,17 +7,15 @@ namespace Base2N.Decoders;
 
 public class BufferWriterBase2NDecoder : IBase2NDecoder
 {
-    private ulong _buffer;
-    private int _currentBits;
+    protected ulong _buffer;
+    protected int _currentBits;
 
     public IBufferWriter<byte> Writer { get; }
     public int Radix { get; }
 
     public BufferWriterBase2NDecoder(IBufferWriter<byte> writer, int radix)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(radix, 2);
-        if (BitOperations.PopCount((uint)radix) != 1)
-            throw new ArgumentException("Radix must be a power of two.", nameof(radix));
+        Base2NUtils.ValidateRadix(radix);
         Writer = writer;
         Radix = radix;
     }

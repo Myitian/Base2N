@@ -24,9 +24,7 @@ public readonly ref struct SpanBase2NEncoder : IReadOnlyList<int>
 
     public SpanBase2NEncoder(ReadOnlySpan<byte> data, int radix)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(radix, 2);
-        if (BitOperations.PopCount((uint)radix) != 1)
-            throw new ArgumentException("Radix must be a power of two.", nameof(radix));
+        Base2NUtils.ValidateRadix(radix);
         Data = data;
         Radix = radix;
         (LongCount, ExtraBits) = Base2NUtils.GetCountAndExtraBits(data.Length, radix);
@@ -58,9 +56,7 @@ public readonly ref struct SpanBase2NEncoder : IReadOnlyList<int>
         public readonly bool ReadingCompleted => _index < 0;
 
         public bool MoveNext()
-        {
-            return Base2NUtils.MoveNext(ref this);
-        }
+            => Base2NUtils.MoveNext(ref this);
         public void Reset()
         {
             _currentBits = 0;
@@ -68,7 +64,7 @@ public readonly ref struct SpanBase2NEncoder : IReadOnlyList<int>
         }
         public readonly void Dispose() { }
 
-        uint IBase2NEnumerator.ReadAtLeast(ref int bytesToRead)
+        public uint ReadData(ref int bytesToRead)
         {
             int remaining = _data.Length - _index;
             Span<byte> buffer = stackalloc byte[4];

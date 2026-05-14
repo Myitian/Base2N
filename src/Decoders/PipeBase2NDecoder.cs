@@ -8,8 +8,6 @@ public class PipeBase2NDecoder(PipeWriter writer, int radix, bool leaveOpen = fa
     : BufferWriterBase2NDecoder(writer, radix), IBase2NAsyncDecoder
 {
     private byte[]? _asyncBuffer;
-    private ulong _buffer;
-    private int _currentBits;
     private readonly bool _leaveOpen = leaveOpen;
 
     public PipeBase2NDecoder(Stream data, int radix, StreamPipeWriterOptions? options = null)

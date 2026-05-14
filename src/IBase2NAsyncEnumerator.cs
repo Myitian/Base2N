@@ -7,5 +7,5 @@ public interface IBase2NAsyncEnumerator
     int Current { get; set; }
     int CurrentBits { get; set; }
     bool ReadingCompleted { get; }
-    ValueTask<(uint Data, int Read)> ReadAtLeastAsync(int bytesToRead, CancellationToken cancellationToken);
+    ValueTask<(uint Data, int Read)> ReadDataAsync(int bytesToRead, CancellationToken cancellationToken);
 }

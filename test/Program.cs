@@ -87,7 +87,7 @@ static async ValueTask Test2(MemoryStream resultBuffer)
         using (MemoryStream ms = new(buffer, 0, length))
         {
             PipeBase2NEncoder encoder = new(ms, radix);
-            await using PipeBase2NEncoder.AsyncEnumerator enumerator = encoder.GetAsyncEnumerator();
+            await using PipeBase2NEncoder.Enumerator enumerator = encoder.GetAsyncEnumerator();
             await using PipeBase2NDecoder decoder = new(resultBuffer, radix, new(leaveOpen: true));
             if (await enumerator.MoveNextAsync())
             {
@@ -126,8 +126,8 @@ static void Test3(MemoryStream resultBuffer)
         RandomNumberGenerator.Fill(mem.Span);
         using (MemoryStream ms = new(buffer, 0, length))
         {
-            SyncStreamBase2NEncoder encoder = new(ms, radix);
-            using SyncStreamBase2NEncoder.Enumerator enumerator = encoder.GetEnumerator();
+            StreamBase2NEncoder encoder = new(ms, radix);
+            using StreamBase2NEncoder.Enumerator enumerator = encoder.GetEnumerator();
             using PipeBase2NDecoder decoder = new(resultBuffer, radix, new(leaveOpen: true));
             if (enumerator.MoveNext())
             {

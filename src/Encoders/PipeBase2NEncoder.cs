@@ -12,9 +12,7 @@ public class PipeBase2NEncoder : IAsyncEnumerable<int>
 
     public PipeBase2NEncoder(PipeReader reader, int radix)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(radix, 2);
-        if (BitOperations.PopCount((uint)radix) != 1)
-            throw new ArgumentException("Radix must be a power of two.", nameof(radix));
+        Base2NUtils.ValidateRadix(radix);
         Reader = reader;
         Radix = radix;
     }
@@ -23,12 +21,12 @@ public class PipeBase2NEncoder : IAsyncEnumerable<int>
     public PipeBase2NEncoder(Stream stream, int radix, StreamPipeReaderOptions? options = null)
         : this(PipeReader.Create(stream, options), radix) { }
 
-    public AsyncEnumerator GetAsyncEnumerator(CancellationToken cancellationToken = default)
+    public Enumerator GetAsyncEnumerator(CancellationToken cancellationToken = default)
         => new(this, cancellationToken);
     IAsyncEnumerator<int> IAsyncEnumerable<int>.GetAsyncEnumerator(CancellationToken cancellationToken)
         => GetAsyncEnumerator(cancellationToken);
 
-    public sealed class AsyncEnumerator(PipeBase2NEncoder encoder, CancellationToken cancellationToken)
+    public sealed class Enumerator(PipeBase2NEncoder encoder, CancellationToken cancellationToken)
         : IAsyncEnumerator<int>, IBase2NAsyncEnumerator, IDisposable
     {
         private readonly CancellationToken _cancellationToken = cancellationToken;
@@ -48,7 +46,7 @@ public class PipeBase2NEncoder : IAsyncEnumerable<int>
 
         public async ValueTask<bool> MoveNextAsync()
         {
-            ObjectDisposedException.ThrowIf(_reader is null, typeof(AsyncEnumerator));
+            ObjectDisposedException.ThrowIf(_reader is null, typeof(Enumerator));
             return await Base2NUtils.MoveNextAsync(this, _cancellationToken).ConfigureAwait(false);
         }
         public void Reset()
@@ -57,7 +55,6 @@ public class PipeBase2NEncoder : IAsyncEnumerable<int>
         {
             _reader?.Complete();
             _reader = null;
-            GC.SuppressFinalize(this);
         }
         public async ValueTask DisposeAsync()
         {
@@ -66,12 +63,11 @@ public class PipeBase2NEncoder : IAsyncEnumerable<int>
                 await _reader.CompleteAsync().ConfigureAwait(false);
                 _reader = null;
             }
-            GC.SuppressFinalize(this);
         }
 
-        public async ValueTask<(uint Data, int Read)> ReadAtLeastAsync(int bytesToRead, CancellationToken cancellationToken)
+        public async ValueTask<(uint Data, int Read)> ReadDataAsync(int bytesToRead, CancellationToken cancellationToken)
         {
-            ObjectDisposedException.ThrowIf(_reader is null, typeof(AsyncEnumerator));
+            ObjectDisposedException.ThrowIf(_reader is null, typeof(Enumerator));
             ReadResult result = await _reader.ReadAtLeastAsync(bytesToRead, cancellationToken).ConfigureAwait(false);
             if (result.IsCompleted || result.IsCanceled)
             {

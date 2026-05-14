@@ -5,6 +5,13 @@ namespace Base2N;
 
 public static class Base2NUtils
 {
+    public static void ValidateRadix(int radix)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(radix, 2);
+        if (BitOperations.PopCount((uint)radix) != 1)
+            throw new ArgumentException("Radix must be a power of two.", nameof(radix));
+    }
+
     public static (long Count, int ExtraBits) GetCountAndExtraBits(long dataLength, int radix)
     {
         int bitsPerDigit = BitOperations.TrailingZeroCount((uint)radix);
@@ -52,7 +59,7 @@ public static class Base2NUtils
             }
             int bytesToRead = ~offset / 8 + 1;
             int bitsToRead = bytesToRead * 8;
-            uint dataRead = enumerator.ReadAtLeast(ref bytesToRead) >> (32 - bitsToRead);
+            uint dataRead = enumerator.ReadData(ref bytesToRead) >> (32 - bitsToRead);
             if (enumerator.CurrentBits == 0 && bytesToRead == 0)
                 return false;
             enumerator.Buffer = (enumerator.Buffer << bitsToRead) | dataRead;
@@ -87,7 +94,7 @@ public static class Base2NUtils
             }
             int bytesToRead = ~offset / 8 + 1;
             int bitsToRead = bytesToRead * 8;
-            uint dataRead = enumerator.ReadAtLeast(ref bytesToRead) >> (32 - bitsToRead);
+            uint dataRead = enumerator.ReadData(ref bytesToRead) >> (32 - bitsToRead);
             if (enumerator.CurrentBits == 0 && bytesToRead == 0)
                 return false;
             enumerator.Buffer = (enumerator.Buffer << bitsToRead) | dataRead;
@@ -122,7 +129,7 @@ public static class Base2NUtils
             }
             int bytesToRead = ~offset / 8 + 1;
             int bitsToRead = bytesToRead * 8;
-            (uint data, int read) = await enumerator.ReadAtLeastAsync(bytesToRead, cancellationToken).ConfigureAwait(false);
+            (uint data, int read) = await enumerator.ReadDataAsync(bytesToRead, cancellationToken).ConfigureAwait(false);
             if (enumerator.CurrentBits == 0 && read == 0)
                 return false;
             uint dataRead = data >> (32 - bitsToRead);
