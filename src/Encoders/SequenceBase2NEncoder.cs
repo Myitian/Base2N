@@ -4,13 +4,23 @@ using System.Collections;
 
 namespace Base2N.Encoders;
 
-public readonly struct SequenceBase2NEncoder : IEnumerable<int>
+public readonly struct SequenceBase2NEncoder : IReadOnlyList<int>
 {
     public ReadOnlySequence<byte> Data { get; }
     public long LongCount { get; }
     public int Count => checked((int)LongCount);
     public int Radix { get; }
     public int ExtraBits { get; }
+
+    public int this[int index]
+    {
+        get
+        {
+            ArgumentOutOfRangeException.ThrowIfNegative(index);
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, Count);
+            return Base2NUtils.DigitAt(Data, Radix, index);
+        }
+    }
 
     public SequenceBase2NEncoder(ReadOnlySequence<byte> data, int radix)
     {
@@ -40,10 +50,10 @@ public readonly struct SequenceBase2NEncoder : IEnumerable<int>
         public int Current { readonly get; private set; }
         readonly object IEnumerator.Current => Current;
 
-        ulong IBase2NEnumerator.Buffer { readonly get => _buffer; set => _buffer = value; }
-        readonly int IBase2NEnumerator.Mask => _mask;
-        int IBase2NEnumerator.Current { readonly get => Current; set => Current = value; }
-        int IBase2NEnumerator.CurrentBits { readonly get => _currentBits; set => _currentBits = value; }
+        ulong IBase2NEnumeratorData.Buffer { readonly get => _buffer; set => _buffer = value; }
+        readonly int IBase2NEnumeratorData.Mask => _mask;
+        int IBase2NEnumeratorData.Current { readonly get => Current; set => Current = value; }
+        int IBase2NEnumeratorData.CurrentBits { readonly get => _currentBits; set => _currentBits = value; }
         public bool ReadingCompleted { get; private set; }
 
         public bool MoveNext()

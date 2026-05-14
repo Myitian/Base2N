@@ -48,10 +48,10 @@ public readonly ref struct SpanBase2NEncoder : IReadOnlyList<int>
         public int Current { readonly get; private set; }
         readonly object IEnumerator.Current => Current;
 
-        ulong IBase2NEnumerator.Buffer { readonly get => _buffer; set => _buffer = value; }
-        readonly int IBase2NEnumerator.Mask => _mask;
-        int IBase2NEnumerator.Current { readonly get => Current; set => Current = value; }
-        int IBase2NEnumerator.CurrentBits { readonly get => _currentBits; set => _currentBits = value; }
+        ulong IBase2NEnumeratorData.Buffer { readonly get => _buffer; set => _buffer = value; }
+        readonly int IBase2NEnumeratorData.Mask => _mask;
+        int IBase2NEnumeratorData.Current { readonly get => Current; set => Current = value; }
+        int IBase2NEnumeratorData.CurrentBits { readonly get => _currentBits; set => _currentBits = value; }
         public readonly bool ReadingCompleted => _index < 0;
 
         public bool MoveNext()

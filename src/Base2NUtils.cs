@@ -1,4 +1,5 @@
 using Base2N.Encoders;
+using System.Buffers;
 using System.Buffers.Binary;
 using System.Numerics;
 
@@ -34,6 +35,20 @@ public static class Base2NUtils
         int bitInByteOffset = (int)bitOffset % 8;
         int bytesToRead = (bitsPerDigit + bitInByteOffset + 7) / 8;
         ReadOnlySpan<byte> source = data.Slice(byteOffset, Math.Min(bytesToRead, data.Length - byteOffset));
+        Span<byte> buffer = stackalloc byte[8];
+        buffer.Clear();
+        source.CopyTo(buffer);
+        return (int)(BinaryPrimitives.ReadUInt64BigEndian(buffer) >> (64 - bitsPerDigit - bitInByteOffset)) & mask;
+    }
+    public static int DigitAt(ReadOnlySequence<byte> data, int radix, int index)
+    {
+        int mask = radix - 1;
+        int bitsPerDigit = BitOperations.PopCount((uint)mask);
+        ulong bitOffset = (ulong)index * (ulong)bitsPerDigit;
+        int byteOffset = (int)(bitOffset / 8);
+        int bitInByteOffset = (int)bitOffset % 8;
+        int bytesToRead = (bitsPerDigit + bitInByteOffset + 7) / 8;
+        ReadOnlySequence<byte> source = data.Slice(byteOffset, Math.Min(bytesToRead, data.Length - byteOffset));
         Span<byte> buffer = stackalloc byte[8];
         buffer.Clear();
         source.CopyTo(buffer);

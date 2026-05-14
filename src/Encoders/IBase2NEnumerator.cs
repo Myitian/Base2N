@@ -1,11 +1,6 @@
-namespace Base2N;
+namespace Base2N.Encoders;
 
-public interface IBase2NEnumerator
+public interface IBase2NEnumerator : IBase2NEnumeratorData
 {
-    ulong Buffer { get; set; }
-    int Mask { get; }
-    int Current { get; set; }
-    int CurrentBits { get; set; }
-    bool ReadingCompleted { get; }
     uint ReadData(ref int bytesToRead);
 }

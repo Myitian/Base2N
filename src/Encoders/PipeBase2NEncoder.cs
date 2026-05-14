@@ -37,10 +37,10 @@ public class PipeBase2NEncoder : IAsyncEnumerable<int>
         public int CurrentBits => _currentBits;
         public int Current { get; private set; }
 
-        ulong IBase2NAsyncEnumerator.Buffer { get => _buffer; set => _buffer = value; }
-        int IBase2NAsyncEnumerator.Mask => _mask;
-        int IBase2NAsyncEnumerator.Current { get => Current; set => Current = value; }
-        int IBase2NAsyncEnumerator.CurrentBits { get => _currentBits; set => _currentBits = value; }
+        ulong IBase2NEnumeratorData.Buffer { get => _buffer; set => _buffer = value; }
+        int IBase2NEnumeratorData.Mask => _mask;
+        int IBase2NEnumeratorData.Current { get => Current; set => Current = value; }
+        int IBase2NEnumeratorData.CurrentBits { get => _currentBits; set => _currentBits = value; }
         public bool ReadingCompleted { get; private set; }
 
         public async ValueTask<bool> MoveNextAsync()
