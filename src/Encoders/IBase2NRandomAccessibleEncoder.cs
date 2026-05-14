@@ -4,5 +4,4 @@ public interface IBase2NRandomAccessibleEncoder : IBase2NEncoder, IReadOnlyList<
 {
     long LongCount { get; }
     int ExtraBits { get; }
-    int Radix { get; }
 }
