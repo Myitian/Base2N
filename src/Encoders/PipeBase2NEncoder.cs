@@ -1,7 +1,6 @@
 using System.Buffers;
 using System.Buffers.Binary;
 using System.IO.Pipelines;
-using System.Numerics;
 
 namespace Base2N.Encoders;
 
@@ -64,7 +63,6 @@ public class PipeBase2NEncoder : IAsyncEnumerable<int>
                 _reader = null;
             }
         }
-
         public async ValueTask<(uint Data, int Read)> ReadDataAsync(int bytesToRead, CancellationToken cancellationToken)
         {
             ObjectDisposedException.ThrowIf(_reader is null, typeof(Enumerator));

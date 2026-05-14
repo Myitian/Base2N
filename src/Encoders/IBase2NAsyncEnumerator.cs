@@ -1,4 +1,4 @@
-namespace Base2N;
+namespace Base2N.Encoders;
 
 public interface IBase2NAsyncEnumerator
 {

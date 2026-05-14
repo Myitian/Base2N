@@ -1,3 +1,4 @@
+using Base2N.Encoders;
 using System.Buffers.Binary;
 using System.Numerics;
 

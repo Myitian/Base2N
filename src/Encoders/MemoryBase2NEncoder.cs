@@ -1,6 +1,5 @@
 using System.Buffers.Binary;
 using System.Collections;
-using System.Numerics;
 
 namespace Base2N.Encoders;
 
@@ -64,7 +63,6 @@ public readonly struct MemoryBase2NEncoder : IReadOnlyList<int>
             _index = 0;
         }
         public readonly void Dispose() { }
-
         public uint ReadData(ref int bytesToRead)
         {
             int remaining = _data.Length - _index;
