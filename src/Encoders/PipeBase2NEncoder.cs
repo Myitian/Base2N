@@ -26,7 +26,7 @@ public class PipeBase2NEncoder : IAsyncEnumerable<int>
         => GetAsyncEnumerator(cancellationToken);
 
     public sealed class Enumerator(PipeBase2NEncoder encoder, CancellationToken cancellationToken)
-        : IAsyncEnumerator<int>, IBase2NAsyncEnumerator, IDisposable
+        : IBase2NAsyncEnumerator, IDisposable
     {
         private readonly CancellationToken _cancellationToken = cancellationToken;
         private PipeReader? _reader = encoder.Reader;

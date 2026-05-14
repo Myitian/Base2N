@@ -36,7 +36,7 @@ public readonly ref struct SpanBase2NEncoder : IReadOnlyList<int>
     IEnumerator IEnumerable.GetEnumerator()
         => throw new NotSupportedException();
 
-    public ref struct Enumerator(SpanBase2NEncoder encoder) : IEnumerator<int>, IBase2NEnumerator
+    public ref struct Enumerator(SpanBase2NEncoder encoder) : IBase2NEnumerator
     {
         private readonly ReadOnlySpan<byte> _data = encoder.Data;
         private ulong _buffer;

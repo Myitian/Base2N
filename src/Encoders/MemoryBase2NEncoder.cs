@@ -36,8 +36,7 @@ public readonly struct MemoryBase2NEncoder : IReadOnlyList<int>
     IEnumerator IEnumerable.GetEnumerator()
         => GetEnumerator();
 
-    public struct Enumerator(MemoryBase2NEncoder encoder)
-        : IEnumerator<int>, IBase2NEnumerator
+    public struct Enumerator(MemoryBase2NEncoder encoder) : IBase2NEnumerator
     {
         private readonly ReadOnlyMemory<byte> _data = encoder.Data;
         private ulong _buffer;

@@ -29,7 +29,7 @@ public sealed class StreamBase2NEncoder : IEnumerable<int>, IAsyncEnumerable<int
         => GetAsyncEnumerator(cancellationToken);
 
     public sealed class Enumerator(StreamBase2NEncoder encoder, CancellationToken cancellationToken, bool noReset = false)
-        : IEnumerator<int>, IBase2NEnumerator, IAsyncEnumerator<int>, IBase2NAsyncEnumerator
+        : IBase2NEnumerator, IBase2NAsyncEnumerator
     {
         private readonly CancellationToken _cancellationToken = cancellationToken;
         private byte[]? _asyncBuffer;

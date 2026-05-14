@@ -38,7 +38,7 @@ public readonly struct SequenceBase2NEncoder : IReadOnlyList<int>
         => GetEnumerator();
 
     public struct Enumerator(SequenceBase2NEncoder encoder)
-        : IEnumerator<int>, IBase2NEnumerator
+        : IBase2NEnumerator
     {
         private readonly ReadOnlySequence<byte> _original = encoder.Data;
         private ReadOnlySequence<byte> _data = encoder.Data;
