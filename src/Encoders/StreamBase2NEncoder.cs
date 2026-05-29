@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace Base2N.Encoders;
 
-public sealed class StreamBase2NEncoder : IBase2NEncoder, IEnumerable<int>, IAsyncEnumerable<int>
+public sealed class StreamBase2NEncoder : IRadixGetter, IEnumerable<int>, IAsyncEnumerable<int>
 {
     public Stream Stream { get; }
     public int Radix { get; }
@@ -29,7 +29,7 @@ public sealed class StreamBase2NEncoder : IBase2NEncoder, IEnumerable<int>, IAsy
         => GetAsyncEnumerator(cancellationToken);
 
     public sealed class Enumerator(StreamBase2NEncoder encoder, CancellationToken cancellationToken, bool noReset = false)
-        : IBase2NEnumerator, IBase2NAsyncEnumerator
+        : IBase2NEnumerator, IAsyncBase2NEnumerator
     {
         private readonly CancellationToken _cancellationToken = cancellationToken;
         private byte[]? _asyncBuffer;
@@ -37,10 +37,10 @@ public sealed class StreamBase2NEncoder : IBase2NEncoder, IEnumerable<int>, IAsy
         private readonly long _position = noReset ? -1 : encoder.Stream.TryGetPosition();
         private ulong _buffer;
         private readonly int _mask = encoder.Radix - 1;
-        private int _currentBits = 0;
+        private int _currentBits;
         private readonly bool _leaveOpen = encoder._leaveOpen;
 
-        public int CurrentBits => _currentBits;
+        public int CurrentBitCount => _currentBits;
         public int Current { get; private set; }
         object IEnumerator.Current => Current;
 
@@ -48,21 +48,21 @@ public sealed class StreamBase2NEncoder : IBase2NEncoder, IEnumerable<int>, IAsy
         int IBase2NEnumeratorData.Mask => _mask;
         int IBase2NEnumeratorData.CurrentValue { get => Current; set => Current = value; }
         int IBase2NEnumeratorData.CurrentBits { get => _currentBits; set => _currentBits = value; }
-        public bool ReadingCompleted { get; private set; } = false;
+        public bool ReadingCompleted { get; private set; }
 
         public bool MoveNext()
         {
-            ObjectDisposedException.ThrowIf(_stream is null, typeof(Enumerator));
+            ObjectDisposedException.ThrowIf(_stream is null, this);
             return Base2NUtils.MoveNext(this);
         }
         public async ValueTask<bool> MoveNextAsync()
         {
-            ObjectDisposedException.ThrowIf(_stream is null, typeof(Enumerator));
+            ObjectDisposedException.ThrowIf(_stream is null, this);
             return await Base2NUtils.MoveNextAsync(this, _cancellationToken).ConfigureAwait(false);
         }
         public void Reset()
         {
-            ObjectDisposedException.ThrowIf(_stream is null, typeof(Enumerator));
+            ObjectDisposedException.ThrowIf(_stream is null, this);
             if (_position < 0)
                 throw new NotSupportedException();
             _stream.Position = _position;
@@ -83,7 +83,7 @@ public sealed class StreamBase2NEncoder : IBase2NEncoder, IEnumerable<int>, IAsy
         }
         public uint ReadData(ref int bytesToRead)
         {
-            ObjectDisposedException.ThrowIf(_stream is null, typeof(Enumerator));
+            ObjectDisposedException.ThrowIf(_stream is null, this);
 
             int original = bytesToRead;
             Span<byte> buffer = stackalloc byte[4];
@@ -95,7 +95,7 @@ public sealed class StreamBase2NEncoder : IBase2NEncoder, IEnumerable<int>, IAsy
         }
         public async ValueTask<(uint, int)> ReadDataAsync(int bytesToRead, CancellationToken cancellationToken)
         {
-            ObjectDisposedException.ThrowIf(_stream is null, typeof(Enumerator));
+            ObjectDisposedException.ThrowIf(_stream is null, this);
 
             int original = bytesToRead;
             Memory<byte> buffer = _asyncBuffer ??= new byte[4];

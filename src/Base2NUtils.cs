@@ -16,6 +16,7 @@ public static class Base2NUtils
 
     public static (long Count, int ExtraBits) GetCountAndExtraBits(long dataLength, int radix)
     {
+        ValidateRadix(radix);
         int bitsPerDigit = BitOperations.TrailingZeroCount((uint)radix);
         (long count, long extraBitsU64) = Math.DivRem(dataLength * 8, bitsPerDigit);
         int extraBits = (int)extraBitsU64;
@@ -28,6 +29,7 @@ public static class Base2NUtils
     }
     public static int DigitAt(ReadOnlySpan<byte> data, int radix, int index)
     {
+        ValidateRadix(radix);
         int mask = radix - 1;
         int bitsPerDigit = BitOperations.PopCount((uint)mask);
         ulong bitOffset = (ulong)index * (ulong)bitsPerDigit;
@@ -42,6 +44,7 @@ public static class Base2NUtils
     }
     public static int DigitAt(ReadOnlySequence<byte> data, int radix, int index)
     {
+        ValidateRadix(radix);
         int mask = radix - 1;
         int bitsPerDigit = BitOperations.PopCount((uint)mask);
         ulong bitOffset = (ulong)index * (ulong)bitsPerDigit;
@@ -124,7 +127,7 @@ public static class Base2NUtils
         enumerator.CurrentBits -= bitsPerDigit;
         return true;
     }
-    public static async ValueTask<bool> MoveNextAsync(IBase2NAsyncEnumerator enumerator, CancellationToken cancellationToken)
+    public static async ValueTask<bool> MoveNextAsync(IAsyncBase2NEnumerator enumerator, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(enumerator);
         int bitsPerDigit = BitOperations.PopCount((uint)enumerator.Mask);
@@ -160,6 +163,7 @@ public static class Base2NUtils
         enumerator.CurrentBits -= bitsPerDigit;
         return true;
     }
+#pragma warning disable CA1031
     internal static long TryGetPosition(this Stream stream)
     {
         try

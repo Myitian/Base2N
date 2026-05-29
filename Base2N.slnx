@@ -1,4 +1,5 @@
 <Solution>
-  <Project Path="src/Base2N.csproj" />
-  <Project Path="test/Base2N.Test.csproj" />
+  <Project Path="Base2N/Base2N.csproj" />
+  <Project Path="Base2N.Text/Base2N.Text.csproj" />
+  <Project Path="Base2N.Test/Base2N.Test.csproj" />
 </Solution>

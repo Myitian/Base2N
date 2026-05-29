@@ -44,7 +44,7 @@ public readonly ref struct SpanBase2NEncoder : IBase2NRandomAccessibleEncoder
         private int _currentBits = 0;
         private int _index = 0;
 
-        public readonly int CurrentBits => _currentBits;
+        public readonly int CurrentBitCount => _currentBits;
         public int Current { readonly get; private set; }
         readonly object IEnumerator.Current => Current;
 

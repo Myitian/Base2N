@@ -4,7 +4,7 @@ using System.IO.Pipelines;
 
 namespace Base2N.Encoders;
 
-public class PipeBase2NEncoder : IBase2NEncoder, IAsyncEnumerable<int>
+public class PipeBase2NEncoder : IRadixGetter, IAsyncEnumerable<int>
 {
     public PipeReader Reader { get; }
     public int Radix { get; }
@@ -25,8 +25,9 @@ public class PipeBase2NEncoder : IBase2NEncoder, IAsyncEnumerable<int>
     IAsyncEnumerator<int> IAsyncEnumerable<int>.GetAsyncEnumerator(CancellationToken cancellationToken)
         => GetAsyncEnumerator(cancellationToken);
 
+#pragma warning disable CA1034
     public sealed class Enumerator(PipeBase2NEncoder encoder, CancellationToken cancellationToken)
-        : IBase2NAsyncEnumerator, IDisposable
+        : IAsyncBase2NEnumerator, IDisposable
     {
         private readonly CancellationToken _cancellationToken = cancellationToken;
         private PipeReader? _reader = encoder.Reader;
@@ -34,7 +35,7 @@ public class PipeBase2NEncoder : IBase2NEncoder, IAsyncEnumerable<int>
         private readonly int _mask = encoder.Radix - 1;
         private int _currentBits;
 
-        public int CurrentBits => _currentBits;
+        public int CurrentBitCount => _currentBits;
         public int Current { get; private set; }
 
         ulong IBase2NEnumeratorData.Buffer { get => _buffer; set => _buffer = value; }
@@ -45,7 +46,7 @@ public class PipeBase2NEncoder : IBase2NEncoder, IAsyncEnumerable<int>
 
         public async ValueTask<bool> MoveNextAsync()
         {
-            ObjectDisposedException.ThrowIf(_reader is null, typeof(Enumerator));
+            ObjectDisposedException.ThrowIf(_reader is null, this);
             return await Base2NUtils.MoveNextAsync(this, _cancellationToken).ConfigureAwait(false);
         }
         public void Reset()
@@ -65,7 +66,7 @@ public class PipeBase2NEncoder : IBase2NEncoder, IAsyncEnumerable<int>
         }
         public async ValueTask<(uint Data, int Read)> ReadDataAsync(int bytesToRead, CancellationToken cancellationToken)
         {
-            ObjectDisposedException.ThrowIf(_reader is null, typeof(Enumerator));
+            ObjectDisposedException.ThrowIf(_reader is null, this);
             ReadResult result = await _reader.ReadAtLeastAsync(bytesToRead, cancellationToken).ConfigureAwait(false);
             if (result.IsCompleted || result.IsCanceled)
             {

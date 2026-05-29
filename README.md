@@ -1,2 +1,2 @@
 # Base2N
-Convert between bytes and base-2^n sequence
+An extensible converter between bytes and base-$2^n$ sequence.

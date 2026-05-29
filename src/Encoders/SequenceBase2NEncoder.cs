@@ -4,6 +4,7 @@ using System.Collections;
 
 namespace Base2N.Encoders;
 
+#pragma warning disable CA1815
 public readonly struct SequenceBase2NEncoder : IBase2NRandomAccessibleEncoder
 {
     public ReadOnlySequence<byte> Data { get; }
@@ -46,7 +47,7 @@ public readonly struct SequenceBase2NEncoder : IBase2NRandomAccessibleEncoder
         private readonly int _mask = encoder.Radix - 1;
         private int _currentBits = 0;
 
-        public readonly int CurrentBits => _currentBits;
+        public readonly int CurrentBitCount => _currentBits;
         public int Current { readonly get; private set; }
         readonly object IEnumerator.Current => Current;
 

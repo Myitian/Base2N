@@ -1,8 +1,6 @@
 namespace Base2N.Decoders;
 
-public interface IBase2NDecoder : IDisposable
+public interface IBase2NDecoder : IRadixGetter, IBase2NDigitWriter
 {
-    int Radix { get; }
-    void WriteDigit(int digit, int extraBits = 0);
     void Flush();
 }
