@@ -43,7 +43,7 @@ using MemoryStream resultBuffer = new();
 for (int i = 0; i < 100000; i++)
 {
     Test1(resultBuffer);
-    await Test2(resultBuffer);
+    await Test2(resultBuffer).ConfigureAwait(false);
     Test3(resultBuffer);
 }
 
@@ -88,7 +88,7 @@ static async ValueTask Test2(MemoryStream resultBuffer)
             PipeBase2NEncoder encoder = new(ms, radix);
             await using PipeBase2NEncoder.Enumerator enumerator = encoder.GetAsyncEnumerator();
             await using PipeBase2NDecoder decoder = new(resultBuffer, radix, new(leaveOpen: true));
-            await Base2NProcessor.ProcessAsync(enumerator, decoder);
+            await Base2NProcessor.ProcessAsync(enumerator, decoder).ConfigureAwait(false);
             if (-enumerator.CurrentBitCount != Base2NUtils.GetCountAndExtraBits(length, radix).ExtraBits)
                 throw new Exception("Test failed.");
         }
