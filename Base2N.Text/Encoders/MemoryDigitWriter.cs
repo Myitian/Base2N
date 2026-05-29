@@ -3,13 +3,13 @@ using Base2N.Text.ExtraBitsHandlers;
 
 namespace Base2N.Text.Encoders;
 
-public sealed class StringDigitWriter<TDigitCollection, TExtraBitsHandler> : TextDigitWriter<TExtraBitsHandler>
-    where TDigitCollection : IDigitCollection<string>
+public sealed class MemoryDigitWriter<TDigitCollection, TExtraBitsHandler> : TextDigitWriter<TExtraBitsHandler>
+    where TDigitCollection : IDigitCollection<ReadOnlyMemory<char>>
     where TExtraBitsHandler : IExtraBitsHandler
 {
     public TDigitCollection DigitCollection { get; }
 
-    public StringDigitWriter(
+    public MemoryDigitWriter(
         TextWriter writer,
         TDigitCollection digitCollection,
         TExtraBitsHandler extraBitsHandler,
@@ -24,7 +24,7 @@ public sealed class StringDigitWriter<TDigitCollection, TExtraBitsHandler> : Tex
         if (extraBits == int.MaxValue)
             extraBits = 0;
         else
-            Writer.Write(DigitCollection.GetDigit(digit));
+            Writer.Write(DigitCollection.GetDigit(digit).Span);
         WriteExtraBits(extraBits);
     }
     public override async ValueTask WriteDigitAsync(int digit, int extraBits = -1, CancellationToken cancellationToken = default)
@@ -32,7 +32,7 @@ public sealed class StringDigitWriter<TDigitCollection, TExtraBitsHandler> : Tex
         if (extraBits == int.MaxValue)
             extraBits = 0;
         else
-            await Writer.WriteAsync(DigitCollection.GetDigit(digit).AsMemory(), cancellationToken)
+            await Writer.WriteAsync(DigitCollection.GetDigit(digit), cancellationToken)
                 .ConfigureAwait(false);
         await WriteExtraBitsAsync(extraBits, cancellationToken).ConfigureAwait(false);
     }

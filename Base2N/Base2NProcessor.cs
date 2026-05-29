@@ -1,4 +1,4 @@
-﻿using Base2N.Decoders;
+using Base2N.Decoders;
 using Base2N.Encoders;
 
 namespace Base2N;

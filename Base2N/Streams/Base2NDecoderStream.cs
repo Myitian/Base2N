@@ -1,4 +1,4 @@
-﻿using Base2N.Encoders;
+using Base2N.Encoders;
 using System.Numerics;
 
 namespace Base2N.Streams;

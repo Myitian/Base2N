@@ -1,4 +1,4 @@
-﻿namespace Base2N.Text.Streams;
+namespace Base2N.Text.Streams;
 
 [Flags]
 internal enum State

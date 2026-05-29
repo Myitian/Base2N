@@ -1,4 +1,4 @@
-﻿using Base2N.Text.ExtraBitsHandlers;
+using Base2N.Text.ExtraBitsHandlers;
 using System.Buffers;
 using System.Collections.Frozen;
 

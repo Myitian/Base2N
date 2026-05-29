@@ -1,4 +1,4 @@
-﻿using Base2N.Streams;
+using Base2N.Streams;
 using System.Buffers;
 using System.Text;
 

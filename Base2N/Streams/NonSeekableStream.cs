@@ -1,4 +1,4 @@
-﻿namespace Base2N.Streams;
+namespace Base2N.Streams;
 
 public abstract class NonSeekableStream : Stream
 {

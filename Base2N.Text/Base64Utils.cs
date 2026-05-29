@@ -1,4 +1,4 @@
-﻿using Base2N.Encoders;
+using Base2N.Encoders;
 using Base2N.Text.Decoders;
 using Base2N.Text.Dictionaries;
 using Base2N.Text.Encoders;

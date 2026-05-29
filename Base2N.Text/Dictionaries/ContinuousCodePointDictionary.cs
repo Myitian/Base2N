@@ -1,4 +1,4 @@
-﻿using Base2N.Text.DigitCollections;
+using Base2N.Text.DigitCollections;
 using System.Collections;
 using System.Numerics;
 

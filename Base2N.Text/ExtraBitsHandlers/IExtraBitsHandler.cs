@@ -1,4 +1,4 @@
-﻿namespace Base2N.Text.ExtraBitsHandlers;
+namespace Base2N.Text.ExtraBitsHandlers;
 
 public interface IExtraBitsHandler
 {

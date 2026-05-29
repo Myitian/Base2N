@@ -1,4 +1,4 @@
-﻿namespace Base2N.Text.DigitCollections;
+namespace Base2N.Text.DigitCollections;
 
 #pragma warning disable CA1711,CA1815
 public readonly struct StringDigitCollection(ReadOnlyMemory<string> strings) : IDigitCollection<string>
@@ -9,6 +9,4 @@ public readonly struct StringDigitCollection(ReadOnlyMemory<string> strings) : I
 
     public string GetDigit(int digit)
         => Strings.Span[digit];
-    public ReadOnlyMemory<char> GetDigitString(int digit)
-        => Strings.Span[digit].AsMemory();
 }

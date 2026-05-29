@@ -1,15 +1,16 @@
 using Base2N.Text.DigitCollections;
 using Base2N.Text.ExtraBitsHandlers;
+using System.Buffers;
 
 namespace Base2N.Text.Encoders;
 
-public sealed class StringDigitWriter<TDigitCollection, TExtraBitsHandler> : TextDigitWriter<TExtraBitsHandler>
-    where TDigitCollection : IDigitCollection<string>
+public sealed class SpanDigitWriter<TDigitCollection, TExtraBitsHandler> : TextDigitWriter<TExtraBitsHandler>
+    where TDigitCollection : IDigitCollection<ReadOnlySpan<char>>
     where TExtraBitsHandler : IExtraBitsHandler
 {
     public TDigitCollection DigitCollection { get; }
 
-    public StringDigitWriter(
+    public SpanDigitWriter(
         TextWriter writer,
         TDigitCollection digitCollection,
         TExtraBitsHandler extraBitsHandler,
@@ -32,8 +33,21 @@ public sealed class StringDigitWriter<TDigitCollection, TExtraBitsHandler> : Tex
         if (extraBits == int.MaxValue)
             extraBits = 0;
         else
-            await Writer.WriteAsync(DigitCollection.GetDigit(digit).AsMemory(), cancellationToken)
-                .ConfigureAwait(false);
+        {
+            ReadOnlySpan<char> digitSpan = DigitCollection.GetDigit(digit);
+            char[] digitArray = ArrayPool<char>.Shared.Rent(digitSpan.Length);
+            try
+            {
+                digitSpan.CopyTo(digitArray);
+                await Writer.WriteAsync(digitArray.AsMemory(0, digitSpan.Length), cancellationToken)
+                    .ConfigureAwait(false);
+
+            }
+            finally
+            {
+                ArrayPool<char>.Shared.Return(digitArray);
+            }
+        }
         await WriteExtraBitsAsync(extraBits, cancellationToken).ConfigureAwait(false);
     }
 }

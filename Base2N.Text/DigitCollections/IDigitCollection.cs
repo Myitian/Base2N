@@ -1,4 +1,4 @@
-﻿namespace Base2N.Text.DigitCollections;
+namespace Base2N.Text.DigitCollections;
 
 #pragma warning disable CA1711
 public interface IDigitCollection<T>
