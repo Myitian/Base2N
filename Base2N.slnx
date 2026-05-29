@@ -1,5 +1,5 @@
 <Solution>
-  <Project Path="Base2N.ExampleCLI/Base2N.ExampleCLI.csproj" Id="066d5ecf-7a66-4094-a83d-c5a043732461" />
+  <Project Path="Base2N.ExampleCLI/Base2N.ExampleCLI.csproj" />
   <Project Path="Base2N.Test/Base2N.Test.csproj" />
   <Project Path="Base2N.Text/Base2N.Text.csproj" />
   <Project Path="Base2N/Base2N.csproj" />
